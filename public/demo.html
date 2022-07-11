@@ -35,7 +35,7 @@
     <p><a href="https://github.com/baldosa/otaku-peronista-captcha">🐛 Reportar error o quejarse fuerte</a></p>
     <h5>Hecho con amor a los memes usando la <a href="https://jenil.github.io/chota/">Chota</a></h5>
   </footer>
-  <script src="/home/smarbos/dev/otaku-peronista-captcha/public/javascripts/captcha.js"></script>
+  <script src="./javascripts/captcha.js"></script>
   <script>
   console.log("START DEMO");
   
@@ -46,9 +46,25 @@
       target: "demo",
       overlay: true,
       okMessage: "Validado, bre"
-    }
-    const myCaptcha = new opCaptcha(options, callback).init();
+    };
 
+    function docReady(fn) {
+    // see if DOM is already available
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        // call on next available tick
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}    
+
+docReady(function() {
+    // DOM is loaded and ready for manipulation here
+    console.log("www");
+    const myCaptcha = new opCaptcha(options, callback);
+    myCaptcha.init();
+});
+   
   </script>
 </body>
 
