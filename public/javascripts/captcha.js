@@ -15,13 +15,13 @@ class opCaptcha {
   }
 
   debug(msg) {
-    if (this.debug.debug) {
+    if (this.debug) {
       console.debug(msg);
     }
   }
 
   createContainer () {
-    debug("createContainer");
+    this.debug("createContainer");
     return new Promise((resolve) => {
       this.opCaptchaContainer.id = 'op-captcha-container';
       this.opCaptchaContainer.style.display = "flex";
@@ -39,7 +39,7 @@ class opCaptcha {
   }
 
   createOverlay () {
-    debug("createOverlay");
+    this.debug("createOverlay");
     return new Promise((resolve) => {
       if (this.options.overlay) {
         this.overlay = document.createElement("div");
@@ -58,7 +58,7 @@ class opCaptcha {
   }
   
   createCaptcha() {
-    debug("createCaptcha");
+    this.debug("createCaptcha");
     return new Promise((resolve) => {
       this.opCaptcha.id = 'op-captcha';
       this.opCaptcha.style.display = "none";
@@ -72,7 +72,7 @@ class opCaptcha {
   }
 
   renderCard() {
-    debug("renderCard");
+    this.debug("renderCard");
     return new Promise((resolve) => {
       this.opCaptchaCard.innerHTML = `
       <div id="op-card" class="card op-captcha-card" style="z-index:7331;">
@@ -89,7 +89,7 @@ class opCaptcha {
   }
 
   addListeners() {
-    debug("addListeners");
+    this.debug("addListeners");
     const otakuBtn = document.querySelector('#op-captcha-otaku')
     const peronistaBtn = document.querySelector('#op-captcha-peronista')
 
@@ -103,7 +103,7 @@ class opCaptcha {
   }
 
   createCheckbox() {
-    debug("createCheckbox");
+    this.debug("createCheckbox");
     return new Promise((resolve) => {
       this.opCheckbox.id = 'op-captcha-checkbox';
       this.opCheckbox.innerHTML = `
@@ -131,7 +131,7 @@ class opCaptcha {
             this.renderCard().then(() => {
               this.createCaptcha().then(()=> {
                 this.addListeners();
-                debug("Ready");
+                this.debug("Ready");
                 this.loading = false;
                 this.opCheckbox.style.display = "none";
                 this.opCheckbox.style.visibility = "hiden";
@@ -143,7 +143,7 @@ class opCaptcha {
   }
 
   success(res) {
-    debug("success");
+    this.debug("success");
     return new Promise((resolve) => {
       localStorage.setItem('op-captcha-validator', JSON.stringify(res));
       this.opCaptchaCard.innerHTML =  `
@@ -153,7 +153,7 @@ class opCaptcha {
         <div>   
         `;
       setTimeout(() => {
-        debug("hideCaptcha!");
+        this.debug("hideCaptcha!");
         this.overlay.style.visibility = "hidden";
         this.opCaptchaContainer.style.display = "none";
         resolve();
@@ -163,12 +163,12 @@ class opCaptcha {
   }
 
   async init() {
-    debug("init");
+    this.debug("init");
     this.createCheckbox();
   }
 
   async getRandomImage() {
-    debug("getRandomImage");
+    this.debug("getRandomImage");
     return fetch('https://captcha.meme.ar/captcha')
       .then(response => response.json())
       .then(data => data)
@@ -176,7 +176,7 @@ class opCaptcha {
   }
 
   async validateCaptcha(imgId, option, uuid, callback) {
-    debug("validateCaptcha");
+    this.debug("validateCaptcha");
     await fetch('https://captcha.meme.ar/captcha/check', {
       method: 'POST',
       headers: {
@@ -186,14 +186,14 @@ class opCaptcha {
     })
       .then((res) => res.json())
       .then((res) => {
-        debug(res);
+        this.debug(res);
         if (res.status) {
           this.success(res).then(() => {
             this.callback(res);
             document.getElementById(this.options.target).innerHTML = this.options.okMessage
           });
         } else {
-          debug("somethingHappens");
+          this.debug("somethingHappens");
           this.updateCaptcha().then(() => {
             this.renderCard();
           })
@@ -206,7 +206,7 @@ class opCaptcha {
   }
 
   async loadCaptcha() {
-    debug("loadCaptcha");
+    this.debug("loadCaptcha");
     this.imgData = await this.getRandomImage()
     return new Promise((resolve) => {
       this.overlay.style.display = "block";
@@ -216,7 +216,7 @@ class opCaptcha {
   } 
 
   async updateCaptcha() {
-    debug("updateCaptcha");
+    this.debug("updateCaptcha");
     this.imgData = await this.getRandomImage()
     this.overlay.style.display = "block";
     this.imgSrc = `data:image/jpeg;base64,${this.imgData.image}`;
